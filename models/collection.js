@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER
   };
 
-  const Collection = sequelize.define('collections', collectionSchema, {});
+  const Collection = sequelize.define('collections', collectionSchema, { tableName: "collections" });
 
   Collection.associate = function(models) {
     Collection.belongsTo(models.User);
