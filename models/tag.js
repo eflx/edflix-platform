@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   const Tag = sequelize.define('Tag', tagSchema, { tableName: "tags" });
 
   Tag.associate = function(models) {
-    // associations can be defined here
+    Tag.belongsToMany(models.Item, { through: "items_tags", as: "items", foreignKey: "item_id" });
   };
 
   return Tag;

@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   };
 
-  const Tag = sequelize.define('Subject', tagSchema, { tableName: "subjects" });
+  const Subject = sequelize.define('Subject', subjectSchema, { tableName: "subjects" });
 
   Subject.associate = function(models) {
-    // associations can be defined here
+    Subject.belongsToMany(models.User, { through: "user_subjects", as: "users", foreignKey: "user_id" });
   };
 
   return Subject;

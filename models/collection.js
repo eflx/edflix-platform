@@ -6,12 +6,12 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER
   };
 
-  const Collection = sequelize.define('collections', collectionSchema, { tableName: "collections" });
+  const Collection = sequelize.define('Collection', collectionSchema, { tableName: "collections" });
 
   Collection.associate = function(models) {
-    Collection.belongsTo(models.User);
+    Collection.belongsTo(models.User, { as: "user" });
 
-    Collection.belongsToMany(models.Item, { through: models.CollectionItem, as: "items", foreignKey: "item_id" });
+    Collection.belongsToMany(models.Item, { through: "collection_items", as: "items", foreignKey: "item_id" });
   };
 
   return Collection;
