@@ -16,9 +16,5 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Item, { through: "user_items", as: "items", foreignKey: "item_id" });
   };
 
-  User.prototype.addCollection = function(collection) {
-    collection.user_id = this.id;
-  };
-
   return User;
 };
