@@ -1,5 +1,7 @@
 const express = require("express");
 
+const models = require("../models");
+
 // router for /api/v1/items
 const router = express.Router();
 
@@ -48,8 +50,33 @@ const items = [
     }
 ];
 
-router.get("/", (request, response) => {
-    response.send({items: items});
+router.get("/", async (request, response) => {
+    var result = await models.Item.findAll();
+
+    response.send({items: result});
+});
+
+router.post("/", async (request, response) => {
+    if (!request.body.title)
+    {
+        response.status(400).send({error: "The title of the item is required."});
+
+        return;
+    }
+
+    if (!request.body.url)
+    {
+        response.status(400).send({error: "The URL of the item is required."});
+
+        return;
+    }
+
+    var item = await models.Item.create({
+        title: request.body.title,
+        url: request.body.url
+     });
+
+     response.status(201).send({item: item});
 });
 
 module.exports = router;
