@@ -5,7 +5,9 @@
 module.exports = (sequelize, DataTypes) => {
   const userSchema = {
     name: DataTypes.STRING,
-    email: DataTypes.STRING
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    salt: DataTypes.STRING
   };
 
   const User = sequelize.define('User', userSchema, { tableName: "users" });

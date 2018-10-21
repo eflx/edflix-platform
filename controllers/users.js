@@ -28,10 +28,12 @@ router.post("/", async (request, response) => {
 
     var user = await models.User.create({
         name: request.body.name,
-        email: request.body.email
+        email: request.body.email,
+        password: request.body.password,
+        salt: request.body.salt
      });
 
-     response.status(201).send({user: user});
+    response.status(201).send({user: user});
 });
 
 router.post("/:id/collections", async (request, response) => {
