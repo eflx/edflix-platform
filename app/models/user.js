@@ -24,14 +24,5 @@ module.exports = (sequelize, DataTypes) => {
     return collection;
   };
 
-  User.prototype.items = async function() {
-    var userItems = await this.getItems({
-      attributes: ["title", "url"]
-      // find a way to get comment and rating too
-    });
-
-    return userItems;
-  };
-
   return User;
 };

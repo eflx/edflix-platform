@@ -6,9 +6,19 @@ const models = require("../models");
 const router = express.Router();
 
 router.get("/", async (request, response) => {
-    var result = await models.User.findAll();
+    var result = await models.User.findAll({
+        attributes: ["name", "email"]
+    });
 
     response.send({items: result});
+});
+
+router.get("/:id", async (request, response) => {
+    var user = await models.User.findById(request.params.id, {
+        attributes: ["name", "email"]
+    });
+
+    response.send(user);
 });
 
 router.post("/", async (request, response) => {
@@ -37,7 +47,7 @@ router.post("/", async (request, response) => {
 });
 
 router.post("/:id/collections", async (request, response) => {
-    var user = await models.User.findById(parseInt(request.params.id));
+    var user = await models.User.findById(request.params.id);
 
     if (!user)
     {
@@ -59,7 +69,7 @@ router.post("/:id/collections", async (request, response) => {
 });
 
 router.get("/:id/items", async (request, response) => {
-    var user = await models.User.findById(parseInt(request.params.id));
+    var user = await models.User.findById(request.params.id);
 
     if (!user)
     {
@@ -68,16 +78,11 @@ router.get("/:id/items", async (request, response) => {
         return;
     }
 
-    /*
-    Item.findAll({
-        include: [{
-            model: User,
-            where: {id: request.params.id}
-        }],
-        attributes["title", "url"]
-    })
-    */
-    var items = await user.items();
+    var items = await user.getItems({
+        attributes: ["title", "url"]
+        // TODO: find a way to get comment and rating from
+        // the join table
+    });
 
     response.status(200).send({items: items});
 });
