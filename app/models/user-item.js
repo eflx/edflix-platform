@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     rating: DataTypes.INTEGER
   };
 
-  const UserItem = sequelize.define('UserItem', userItemSchema, { tableName: "user_items" });
+  const UserItem = sequelize.define('UserItem', userItemSchema, {tableName: "user_items", underscored: true});
 
   UserItem.associate = function(models) {
     // associations can be defined here

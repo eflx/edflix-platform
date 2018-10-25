@@ -9,7 +9,7 @@ module.exports = {
     dialectOptions: {
       ssl: true
     },
-    define: {
+    defines: {
       underscored: true
     }
   }
