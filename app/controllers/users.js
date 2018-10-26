@@ -78,10 +78,15 @@ router.get("/:id/items", async (request, response) => {
         return;
     }
 
-    var items = await user.getItems({
-        attributes: ["title", "url"]
-        // TODO: find a way to get comment and rating from
-        // the join table
+    var items = await user.getItems();
+
+    items = items.map(item => {
+        return {
+            title: item.title,
+            url: item.url,
+            comment: item.UserItem.comment,
+            rating: item.UserItem.rating
+        }
     });
 
     response.status(200).send({items: items});
