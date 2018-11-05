@@ -4,6 +4,8 @@ module.exports = (sequelize, DataTypes) => {
   const userSchema = {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
+    external_id: DataTypes.STRING, // id from an identity provider, like Google.
+    // the format of this field is <id-provider>-<id>, e.g. google-1234567
     password: DataTypes.STRING,
     salt: DataTypes.STRING
   };
@@ -18,6 +20,28 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Item, {through: models.UserItem});
   };
 
+  // class methods
+  User.findByExternalId = async function(externalId, options) {
+    var user = undefined;
+
+    if (options && options.attributes)
+    {
+      user = await sequelize.models.User.findOne({
+        where: {external_id: externalId},
+        attributes: options.attributes
+      });
+    }
+    else
+    {
+      user = await sequelize.models.User.findOne({
+        where: { external_id: externalId }
+      });
+    }
+
+    return user;
+  };
+
+  // instance methods
   User.prototype.addCollection = async function(title) {
     var collection = await sequelize.models.Collection.create({title: title, user_id: this.id});
 
