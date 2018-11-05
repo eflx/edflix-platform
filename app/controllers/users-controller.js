@@ -14,10 +14,20 @@ router.get("/", async (request, response) => {
 });
 
 router.get("/:id", async (request, response) => {
-    var user = await models.User.findById(request.params.id, {
-        attributes: ["name", "email"]
-    });
+    var userType = request.query.type;
+    var userAttributes = ["name", "email"];
 
+    var user = (userType && userType === "external") ?
+        await models.User.findByExternalId(request.params.id, {attributes: userAttributes}) :
+        await models.User.findById(request.params.id, {attributes: userAttributes});
+
+    if (!user)
+    {
+        response.status(404).send({error: `No user with id ${request.params.id} was found.`});
+
+        return;
+    }
+    
     response.send(user);
 });
 
@@ -39,8 +49,9 @@ router.post("/", async (request, response) => {
     var user = await models.User.create({
         name: request.body.name,
         email: request.body.email,
-        password: request.body.password,
-        salt: request.body.salt
+        password: request.body.password || "",
+        salt: request.body.salt || "",
+        external_id: request.body.external_id || ""
      });
 
     response.status(201).send({user: user});
