@@ -13,13 +13,15 @@ router.get("/", async (request, response) => {
     response.send({items: result});
 });
 
+const isNumeric = (value) => !isNaN(value);
+
 router.get("/:id", async (request, response) => {
-    var userType = request.query.type;
+    var userId = request.params.id;
     var userAttributes = ["name", "email"];
 
-    var user = (userType && userType === "external") ?
-        await models.User.findByExternalId(request.params.id, {attributes: userAttributes}) :
-        await models.User.findById(request.params.id, {attributes: userAttributes});
+    var user = isNumeric(userId) ?
+        await models.User.findById(userId, {attributes: userAttributes}) :
+        await models.User.findByExternalId(userId, {attributes: userAttributes});
 
     if (!user)
     {
