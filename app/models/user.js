@@ -22,21 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 
   // class methods
   User.findByExternalId = async function(externalId, options) {
-    var user = undefined;
-
-    if (options && options.attributes)
-    {
-      user = await sequelize.models.User.findOne({
-        where: {external_id: externalId},
-        attributes: options.attributes
-      });
-    }
-    else
-    {
-      user = await sequelize.models.User.findOne({
-        where: { external_id: externalId }
-      });
-    }
+    var user = await sequelize.models.User.findOne(Object.assign({where: {external_id: externalId}}, options));
 
     return user;
   };
