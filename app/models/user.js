@@ -20,11 +20,19 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Item, {through: models.UserItem});
   };
 
+  const isNumeric = (value) => !isNaN(value);
+
   // class methods
   User.findByExternalId = async function(externalId, options) {
     var user = await sequelize.models.User.findOne(Object.assign({where: {external_id: externalId}}, options));
 
     return user;
+  };
+
+  User.find = async function(id, options) {
+    return isNumeric(id) ?
+        await sequelize.models.User.findById(id, options) :
+        await sequelize.models.User.findByExternalId(id, options);
   };
 
   // instance methods

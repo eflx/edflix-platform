@@ -22,10 +22,18 @@ const app = express();
 
 app.use(auth);
 
+app.use((error, request, response, next) => {
+    if (error.name === "UnauthorizedError")
+    {
+        return response.status(401).send({error: {code: 401, message: "The authorization token is invalid."}});
+    }
+
+    next();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//app.use("/api/v1/users/:id/items", controllers.userItems);
 app.use("/api/v1/users", controllers.users);
 
 module.exports = app;

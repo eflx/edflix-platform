@@ -5,23 +5,16 @@ const models = require("../models");
 // router for /api/v1/users
 const router = express.Router();
 
-router.get("/", async (request, response) => {
-    var result = await models.User.findAll({
-        attributes: ["name", "email"]
-    });
+const userAttributes = ["name", "email", "id", "external_id"];
 
-    response.send({items: result});
+router.get("/", async (request, response) => {
+    var users = await models.User.findAll();
+
+    response.send({users: users});
 });
 
-const isNumeric = (value) => !isNaN(value);
-
 router.get("/:id", async (request, response) => {
-    var userId = request.params.id;
-    var userAttributes = ["name", "email"];
-
-    var user = isNumeric(userId) ?
-        await models.User.findById(userId, {attributes: userAttributes}) :
-        await models.User.findByExternalId(userId, {attributes: userAttributes});
+    var user = await models.User.find(request.params.id);
 
     if (!user)
     {
@@ -60,7 +53,7 @@ router.post("/", async (request, response) => {
 });
 
 router.post("/:id/collections", async (request, response) => {
-    var user = await models.User.findById(request.params.id);
+    var user = await models.User.find(request.params.id);
 
     if (!user)
     {
@@ -82,7 +75,7 @@ router.post("/:id/collections", async (request, response) => {
 });
 
 router.get("/:id/items", async (request, response) => {
-    var user = await models.User.findById(request.params.id);
+    var user = await models.User.find(request.params.id);
 
     if (!user)
     {
