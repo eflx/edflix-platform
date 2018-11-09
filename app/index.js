@@ -25,7 +25,6 @@ app.use(auth);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//app.use("/api/v1/users/:id/items", controllers.userItems);
 app.use("/api/v1/users", controllers.users);
 
 module.exports = app;
