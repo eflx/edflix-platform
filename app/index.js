@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
@@ -19,6 +20,8 @@ const auth = jwt({
 });
 
 const app = express();
+
+app.use(cors());
 
 app.use(auth);
 
