@@ -14,5 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     //Item.belongsToMany(models.Tag, { through: "item_tags", as: "tags", foreignKey: "tag_id" });
   };
 
+  Item.exists = async url => {
+    var item = await Item.findOne({
+      where: {url: url}
+    });
+
+    return item; // false-y if item doesn't exist
+  };
+
   return Item;
 };

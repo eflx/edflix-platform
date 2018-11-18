@@ -16,7 +16,8 @@ const auth = jwt({
     }),
     audience: `${process.env.AUTH0_AUDIENCE}`,
     issuer: `${process.env.AUTH0_DOMAIN}/`,
-    algorithms: ["RS256"]
+    algorithms: ["RS256"],
+    requestProperty: "token"
 });
 
 const app = express();

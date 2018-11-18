@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Item, {through: models.UserItem});
   };
 
-  const isNumeric = (value) => !isNaN(value);
+  const isNumeric = value => !isNaN(value);
 
   // class methods
   User.findByExternalId = async function(externalId, options) {
@@ -40,6 +40,52 @@ module.exports = (sequelize, DataTypes) => {
     var collection = await sequelize.models.Collection.create({title: title, user_id: this.id});
 
     return collection;
+  };
+
+  User.prototype.associateItem = async function(item, comment, rating) {
+    await sequelize.models.UserItem.create({
+      user_id: this.id,
+      item_id: item.id,
+      rating: rating,
+      comment: comment
+    });
+  };
+
+  User.prototype.addItem = async function(title, url, options) {
+    // TODO: Check if an item with that URL already exists in the database.
+    // If so, check to see if the *user* already has that item. If *that's*
+    // true too, we're done. If not we need to manage the user and item
+    // association in the database
+    /*
+    var item = await sequelize.models.Item.exists(url);
+
+    if (item)
+    {
+      if (this.hasItem(item))
+      {
+        return item;
+      }
+    }
+    else
+    {
+      // create the item...
+      var item = await sequelize.models.Item.create({
+        title: title,
+        url: url
+      });
+    }
+    */
+
+    // create the item...
+    var newItem = await sequelize.models.Item.create({
+      title: title,
+      url: url
+    });
+    
+    // ..., then associate the item with this user
+    await this.associateItem(newItem, options.comment || "", options.rating || 1);
+
+    return newItem;
   };
 
   return User;
