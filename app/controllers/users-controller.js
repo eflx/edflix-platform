@@ -123,31 +123,26 @@ router.post("/:id/items", findUser, async (request, response) => {
         return;
     }
 
-    /*
-    var newItem = await request.user.createItem(
-        {
-            title: request.body.title,
-            url: request.body.url,
-            user_items: {
-                comment: request.body.comment || "",
-                rating: request.body.rating || 1
-            }
-        },
-        {
-            include: [models.UserItem]
+    // create the new item...
+    var newItem = await models.Item.create({
+        title: request.body.title,
+        url: request.body.url
+    });
+    
+    // ..., then create the association between the user and the item...
+    await request.user.addItem(newItem, {
+        through: {
+            comment: request.body.comment || "",
+            rating: request.body.rating || 1
         }
-    );
-    */
-   // TODO: find a way to use the above code.
-    var newItem = await request.user.addItem(request.body.title, request.body.url, {
-        comment: request.body.comment,
-        rating: request.body.rating
     });
 
-    // newItem is the item from the items table, we need data also from the user_items
-    // table, so get that too
+    // ..., finally get the composite item. because this is the m:n relationship
+    // getItems() returns multiple rows, but we need only the first, the newly
+    // created one.
     var item = (await request.user.getItems({where: {id: newItem.id}}))[0];
 
+    // then send that composite item back as the response
     response.status(201).send(transformItem(item));
 });
 
